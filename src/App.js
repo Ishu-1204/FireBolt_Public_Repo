@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License.
+ * limitations under the License
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -103,7 +103,6 @@ export default class App extends Base {
     const standalone = new URLSearchParams(appUrl.search).get('standalone');
     const standalonePrefix = new URLSearchParams(appUrl.search).get('standalonePrefix');
     this.systemui = new URLSearchParams(window.location.search).get('systemui');
-    this.testToken = new URLSearchParams(window.location.search).get('testtoken');
     this.pubSubUuidPresent = false;
     this.appContinue = false;
     process.env.LIFECYCLE_VALIDATION = lifecycle;
@@ -111,7 +110,6 @@ export default class App extends Base {
     process.env.MF_VALUE = false;
     testContext ? (process.env.TESTCONTEXT = JSON.parse(testContext)) : (process.env.TESTCONTEXT = false);
     process.env.TESTCONTEXT = true; // Making TESTCONTEXT = true by default. This line will be removed in later stages when required
-    process.env.TEST_TOKEN = this.testToken;
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.STANDALONE_PREFIX = standalonePrefix;
@@ -120,7 +118,8 @@ export default class App extends Base {
     process.env.SDKS_AVAILABLE = [...CONSTANTS.defaultSDKs, ...CONSTANTS.additionalSDKs];
 
     // Set the pubSub URL if present
-    process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
+    process.env.PUB_SUB_URL = new URLSearchParams(appUrl.search).get('pubSubUrl');
+    process.env.PUB_SUB_TOKEN = new URLSearchParams(appUrl.search).get('pubSubToken');
     process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
     process.env.CURRENT_APPID = new URLSearchParams(appUrl.search).get('appId');
     process.env.APP_TYPE = new URLSearchParams(appUrl.search).get('appType');
@@ -417,12 +416,6 @@ export default class App extends Base {
             console.log('Error getting App Id :: ', err);
           }
 
-          if (query.params.testtoken) {
-            process.env.TEST_TOKEN = query.params.testtoken;
-          } else {
-            logger.error('No Test Token Found in Parameter Initialization response...', 'getParameterInitializationValues');
-          }
-
           if (query.params.macaddress) {
             process.env.MACADDRESS = query.params.macaddress;
           } else {
@@ -434,10 +427,16 @@ export default class App extends Base {
           }
 
           // Set the pubSub URL if present
+          console.log('2507 test log - query params', query.params);
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
+            console.log('2507 test log - query params pubsuburl', process.env.PUB_SUB_URL);
           }
-
+          // Set the pubSub token if present
+          if (query.params.pubSubToken) {
+            process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
+            console.log('2507 test log - query params pubsubtoken', process.env.PUB_SUB_TOKEN);
+          }
           if (query.task) {
             setTimeout(() => {
               const intentReader = new IntentReader();
