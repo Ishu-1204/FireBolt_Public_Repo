@@ -23,7 +23,3 @@ If this pull request addresses any specific issues, please list them here.
 ## Screenshots (if applicable)
 
 If your changes involve UI updates, please include relevant screenshots.
-
-## Additional Notes
-
-Any other relevant information or context that might be helpful for reviewers.
