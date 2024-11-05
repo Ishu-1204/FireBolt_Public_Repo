@@ -1,2 +1,2 @@
 - **Organization Username:** [Enter organization username here]
-- **Repository Name:** [Enter repository name here]
+   - **Repository Name:** [Enter repository name here]
