@@ -15,8 +15,9 @@ jobs:
         run: |
           ORG_USERNAME=$(echo "${{ github.event.pull_request.body }}" | awk -F '[][]' '/Organization Username:/ {print $2}')
           REPO_NAME=$(echo "${{ github.event.pull_request.body }}" | awk -F '[][]' '/Repository Name:/ {print $2}')
-          echo "::set-output name=org_username::$ORG_USERNAME"
-          echo "::set-output name=repo_name::$REPO_NAME"
+          printenv
+          printf "::set-output name=org_username::%s\n" "$ORG_USERNAME"
+          printf "::set-output name=repo_name::%s\n" "$REPO_NAME"
       
       - name: Trigger Another Workflow
         uses: actions/github-script@v7
@@ -29,8 +30,11 @@ jobs:
                 const workflowId = 'Scenario_1.yml'; # Replace with your workflow ID or filename
                 const ref = 'main';
 
+                const escapedOrgUsername = encodeURIComponent('${{ steps.extract-inputs.outputs.org_username }}');
+                const escapedRepoName = encodeURIComponent('${{ steps.extract-inputs.outputs.repo_name }}');
+                
                 const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`;
-
+                
                 const data = {
                     ref: ref,
                     inputs: {
