@@ -36,13 +36,18 @@ jobs:
         with:
           github-token: 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
           script: |
+            // Format input values beforehand
+            const organizationInput = '${{ needs.get-inputs.outputs.organization }}';
+            const repositoryInput = '${{ needs.get-inputs.outputs.repository }}';
+
+            // Trigger the main workflow with formatted inputs
             github.rest.actions.createWorkflowDispatch({
-              owner: '${{ needs.get-inputs.outputs.organization }}',
-              repo: '${{ needs.get-inputs.outputs.repository }}',
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               workflow_id: 'Scenario_1.yml', # Replace with your main workflow file name
               ref: 'main' # Replace with your main branch name
               inputs: {
-                organization: '${{ needs.get-inputs.outputs.organization }}',
-                repository: '${{ needs.get-inputs.outputs.repository }}'
+                organization: organizationInput,
+                repository: repositoryInput
                 }
-            })
+            });
