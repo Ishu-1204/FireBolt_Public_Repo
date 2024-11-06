@@ -41,4 +41,8 @@ jobs:
               repo: '${{ needs.get-inputs.outputs.repository }}',
               workflow_id: 'Scenario_1.yml', # Replace with your main workflow file name
               ref: 'main' # Replace with your main branch name
+              inputs: {
+                organization: '${{ needs.get-inputs.outputs.organization }}',
+                repository: '${{ needs.get-inputs.outputs.repository }}'
+                }
             })
