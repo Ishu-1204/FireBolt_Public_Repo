@@ -34,7 +34,7 @@ jobs:
       - name: Trigger main workflow
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: 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
+          token: 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
           repository: ${{ needs.get-inputs.outputs.organization }}/${{ needs.get-inputs.outputs.repository }}
           event-type: trigger-main-workflow 
           client-payload: '{ "organization": "${{ needs.get-inputs.outputs.organization }}", "repository": "${{ needs.get-inputs.outputs.repository }}" }'
