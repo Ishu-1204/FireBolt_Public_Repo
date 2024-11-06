@@ -21,7 +21,7 @@ jobs:
       - name: Trigger Another Workflow
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.TOKEN }}
           script: |
             async function triggerWorkflow() {
                 const owner = context.repo.owner;
