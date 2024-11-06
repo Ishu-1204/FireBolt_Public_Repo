@@ -1,12 +1,27 @@
-name: workflow for Python using Snyk
+name: Main Workflow
 
-on: 
+on:
   workflow_dispatch:
+    inputs:
+      organization:
+        description: 'Organization name'
+        required: true
+      repository:
+        description: 'Repository name'
+        required: true
 
 jobs:
-    security:
-     runs-on: ubuntu-latest
-     steps:
+  main-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print inputs
+        run: |
+          echo "Organization: ${{ github.event.inputs.organization }}"
+          echo "Repository: ${{ github.event.inputs.repository }}"
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
