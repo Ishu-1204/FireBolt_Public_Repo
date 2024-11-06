@@ -35,7 +35,7 @@ jobs:
                 const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`;
                 
                 const data = {
-                    ref: ref,
+                    ref,
                     inputs: {
                         org_username: '${{ steps.extract-inputs.outputs.org_username }}',
                         repo_name: '${{ steps.extract-inputs.outputs.repo_name }}'
@@ -47,7 +47,7 @@ jobs:
                         headers: {
                             'Accept': 'application/vnd.github.v3+json'
                         },
-                        data: data
+                        data: JSON.stringify(data)
                     });
 
                     if (response.status === 204) {
