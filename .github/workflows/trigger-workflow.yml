@@ -23,7 +23,6 @@ jobs:
         with:
           github-token: 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
           script: |
-            async function triggerWorkflow() {
                 const owner = context.repo.owner;
                 const repo = context.repo.repo;
                 const workflowId = 'Scenario_1.yml'; 
@@ -59,5 +58,3 @@ jobs:
                 } catch (error) {
                     console.error('Error triggering workflow:', error);
                 }
-             }
-             triggerWorkflow()
