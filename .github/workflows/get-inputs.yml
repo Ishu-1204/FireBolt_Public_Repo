@@ -1,0 +1,44 @@
+name: Get Inputs
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  get-inputs:
+    runs-on: ubuntu-latest
+    outputs:
+      organization: ${{ steps.extract-inputs.outputs.organization }}
+      repository: ${{ steps.extract-inputs.outputs.repository }}
+    steps:
+      - name: Get inputs from context
+        run: |
+          echo "Organization/User: ${{ github.repository_owner }}"
+          echo "Repository: ${{ github.repository }}"
+          repo_name=$(echo "${{ github.repository }}" | cut -d '/' -f 2)
+          echo "Repository Name: $repo_name"
+
+      - name: Extract inputs from pull request body
+        id: extract-inputs
+        run: |
+          body="${{ github.event.pull_request.body }}"
+          organization=$(echo "$body" | grep -oP 'Organization: \K.*')
+          repository=$(echo "$body" | grep -oP 'Repository: \K.*')
+          echo "::set-output name=organization::$organization"
+          echo "::set-output name=repository::$repository"
+
+  trigger-main-workflow:
+    needs: get-inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger main workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: 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
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: '${{ needs.get-inputs.outputs.organization }}',
+              repo: '${{ needs.get-inputs.outputs.repository }}',
+              workflow_id: 'Scenario_1.yml', # Replace with your main workflow file name
+              ref: 'main' # Replace with your main branch name
+            })
