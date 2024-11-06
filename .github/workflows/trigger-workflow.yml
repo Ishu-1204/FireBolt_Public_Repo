@@ -21,7 +21,7 @@ jobs:
       - name: Trigger Another Workflow
         uses: actions/github-script@v7
         with:
-          github-token: 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
+          github-token: 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
           script: |
             async function triggerWorkflow() {
                 const owner = context.repo.owner;
