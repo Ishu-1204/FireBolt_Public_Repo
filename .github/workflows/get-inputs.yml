@@ -32,22 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger main workflow
-        uses: actions/github-script@v6
+        uses: peter-evans/repository-dispatch@v3
         with:
-          github-token: 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
-          script: |
-            // Format input values beforehand
-            const organizationInput = '${{ needs.get-inputs.outputs.organization }}';
-            const repositoryInput = '${{ needs.get-inputs.outputs.repository }}';
-
-            // Trigger the main workflow with formatted inputs
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'Scenario_1.yml', # Replace with your main workflow file name
-              ref: 'main' # Replace with your main branch name
-              inputs: {
-                organization: organizationInput,
-                repository: repositoryInput
-                }
-            });
+          token: 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
+          repository: ${{ needs.get-inputs.outputs.organization }}/${{ needs.get-inputs.outputs.repository }}
+          event-type: trigger-main-workflow 
+          client-payload: '{ "organization": "${{ needs.get-inputs.outputs.organization }}", "repository": "${{ needs.get-inputs.outputs.repository }}" }'
