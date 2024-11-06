@@ -7,7 +7,7 @@ Please provide a clear and concise description of the changes proposed in this p
 Please provide the following information:
 
 - **Organization Username:** [Enter organization username here]
-- **Repository Name:** [Enter repository name here]
+   - **Repository Name:** [Enter repository name here]
 
 ## Checklist
 
