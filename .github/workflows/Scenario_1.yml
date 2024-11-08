@@ -1,8 +1,16 @@
 name: Main Workflow
 
 on:
-  repository_dispatch:
-     types: [trigger-main-workflow]
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: 'Organization Name'
+        required: true
+        type: string
+      repository:
+        description: 'Repository Name'
+        required: true
+        type: string
 
 jobs:
   main-job:
