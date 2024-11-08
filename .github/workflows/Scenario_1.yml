@@ -2,25 +2,8 @@ name: Main Workflow
 
 on:
   workflow_dispatch:
-    inputs:
-      organization:
-        description: 'Organization Name'
-        required: true
-        type: string
-      repository:
-        description: 'Repository Name'
-        required: true
-        type: string
-
+    
 jobs:
-  main-job:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Print inputs
-        run: |
-          echo "Organization: ${{ github.event.client_payload.organization }}"
-          echo "Repository: ${{ github.event.client_payload.repository }}"
-
   security:
     runs-on: ubuntu-latest
     steps:
