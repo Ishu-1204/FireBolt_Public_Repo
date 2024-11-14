@@ -1,61 +1,31 @@
-name: Extract PR Inputs and Trigger Workflow
+name: List Repositories
 
 on:
-  pull_request:
-    types: [opened, edited]
+  push:
+    branches:
+      - main
 
 jobs:
-  extract-inputs:
+  list-repos:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        
-      - name: Extract Organization Username and Repository Name
-        run: |
-          ORG_USERNAME=$(echo "${{ github.event.pull_request.body }}" | grep -oP 'Organization Username:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1)
-          REPO_NAME=$(echo "${{ github.event.pull_request.body }}" | grep -oP 'Repository Name:.*?\[(.*?)\]' | cut -d '[' -f 2 | cut -d ']' -f 1)
-          echo "::set-output name=org_username::$ORG_USERNAME"
-          echo "::set-output name=repo_name::$REPO_NAME"
-          
-      - name: Trigger Another Workflow
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const owner = context.repo.owner; // Current repository owner
-            const repo = context.repo.repo; // Current repository name
-            const workflowId = 'Scenario_1.yml'; // Replace with the ID or filename of the workflow to trigger
-            const ref = 'main'; // Replace with the desired branch or tag
+    # Step to checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-            // Construct the API endpoint URL
-            const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`;
+    # Step to update package list and install GitHub CLI
+    - name: Install GitHub CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install gh -y
 
-            // Request body data (including extracted inputs)
-            const data = {
-              ref: ref,
-              inputs: {
-                org_username: '${{ steps.extract-inputs.outputs.org_username }}',
-                repo_name: '${{ steps.extract-inputs.outputs.repo_name }}'
-              }
-            };
+    # Step to authenticate GitHub CLI using a GitHub token
+    - name: Authenticate GitHub CLI
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
 
-            function delay(ms) {
-              return new Promise(resolve => setTimeout(resolve, ms));
-            }
-            await delay(3000); // Wait for 3 seconds
- 
-            // Make the API request
-            const response = await github.request('POST', url, {
-              headers: {
-                'Accept': 'application/vnd.github.v3+json'
-              },
-              data: data
-            });
-                     
-            if (response.status === 204) {
-              console.log('Workflow triggered successfully!');
-            } else {
-              console.error(`Failed to trigger workflow: ${response.status}`);
-              console.error(response.data);
-            }
+    # Step to list repositories in the specified organization
+    - name: List repositories
+      run: gh repo list avi-maniv92 --limit 100
